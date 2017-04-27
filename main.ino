@@ -1,13 +1,8 @@
-const int Motor1Pin1 = 2;
-const int Motor1Pin2 = 3;
-const int Motor2Pin1 = 4;
-const int Motor2Pin2 = 5;
-const int Motor3Pin1 = 6;
-const int Motor3Pin2 = 7;
-const int Motor4Pin1 = 8;
-const int Motor4Pin2 = 9; 
-char state = 's';
-int flag = 0;
+const int Motor1Pin1 = 2; const int Motor1Pin2 = 3;
+const int Motor2Pin1 = 4; const int Motor2Pin2 = 5;
+const int Motor3Pin1 = 6; const int Motor3Pin2 = 7;
+const int Motor4Pin1 = 8; const int Motor4Pin2 = 9; 
+char state = 's'; 
 
 void setup() {
   pinMode(Motor1Pin1, OUTPUT);
@@ -25,21 +20,20 @@ void setup() {
 void loop() {
   if(Serial.available()>0){
     state = Serial.read();
-    flag = 0;
   } 
-  if(state == 'F'){
+  if(state == 'f'){
     GoForward();
   } 
-  if(state == 'B'){
+  if(state == 'b'){
    GoBackward(); 
   } 
-  if(state == 'R'){
+  if(state == 'r'){
     GoRight();
   } 
-  if(state == 'L'){
+  if(state == 'l'){
     GoLeft();
   } 
-  if(state == 'S'){
+  if(state == 's'){
     Stop();
   } 
 }
