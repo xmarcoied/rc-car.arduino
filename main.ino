@@ -1,15 +1,26 @@
 #include <NewPing.h>
 
+// Ultrasonic related 
 #define TRIGGER_PIN  12  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN     11  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define MAX_DISTANCE 450 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
-  
+
+// Base Motors  
 int pso1 = 22  ; int pso2 = 24  ; int psos = 2 ; //pso=pin shemal odam  .. psos pin shemal odam speed (pwm to control speed).. (let 1 be forwards  direction and 2 backwards direction )
 int psw1 = 26  ; int psw2 = 28  ; int psws = 3 ; //pin shemal wara
 int pyo1 = 30  ; int pyo2 = 32  ; int pyos = 4 ; //pin yemen odam
 int pyw1 = 34  ; int pyw2 = 36  ; int pyws = 5 ; // pin yemen wara
 int irs;
+
+// Sound related
+int soundDetectedPin = 10; // Use Pin 10 as our Input
+int soundDetectedVal = HIGH; // This is where we record our Sound Measurement
+boolean bAlarm = false;
+
+unsigned long lastSoundDetectTime; // Record the time that we measured a sound
+
+
 
 // lowest and highest sensor readings:
 const int sensorMin = 0;     // sensor minimum
@@ -23,6 +34,9 @@ void setup() {
   pinMode (pyo1, OUTPUT); pinMode(pyo2, OUTPUT);
   pinMode (pyw1, OUTPUT); pinMode(pyw2, OUTPUT);
   pinMode (52  ,  INPUT); pinMode (13  , OUTPUT);
+
+  // Sound related
+  pinMode (soundDetectedPin, INPUT) ; // input from the Sound Detection Module
 
 }
 //1,0,1,0 backwards >> 0,1,0,1 forwards
@@ -82,6 +96,7 @@ void slowrightwards(){
 
 
 void loop() {
+  
   delay(1000);                     // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
   Serial.print("Ping: ");
   Serial.print(sonar.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
@@ -122,6 +137,32 @@ void loop() {
       else STOP() ;
     }
   }
+
+ // Sound realted fn
+  soundDetectedVal = digitalRead (soundDetectedPin) ; // read the sound alarm time
+  
+  if (soundDetectedVal == LOW) // If we hear a sound
+  {
+  
+    lastSoundDetectTime = millis(); // record the time of the sound alarm
+    // The following is so you don't scroll on the output screen
+    if (!bAlarm){
+      Serial.println("LOUD, LOUD");
+      bAlarm = true;
+    }
+  }
+  else
+  {
+    if( (millis()-lastSoundDetectTime) > soundAlarmTime  &&  bAlarm){
+      Serial.println("quiet");
+      bAlarm = false;
+    }
+  }
+
+ // -------------------
  irs = digitalRead(52)  ;
-  if(irs==HIGH) {rightwards(); delay(200);} 
+  if(irs==LOW) {
+   STOP();
+   delay(2000);
+  } 
 }
