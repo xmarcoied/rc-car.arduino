@@ -17,14 +17,16 @@ int irs;
 int soundDetectedPin = 10; // Use Pin 10 as our Input
 int soundDetectedVal = HIGH; // This is where we record our Sound Measurement
 boolean bAlarm = false;
-
 unsigned long lastSoundDetectTime; // Record the time that we measured a sound
 
 
-
+// Flame-sensor related
 // lowest and highest sensor readings:
 const int sensorMin = 0;     // sensor minimum
 const int sensorMax = 1024;  // sensor maximum
+
+// Mangetic-sensor related 
+const int switchPin = 2;
 
 void setup() {
   Serial.begin(115200);
