@@ -39,7 +39,8 @@ void setup() {
 
   // Sound related
   pinMode (soundDetectedPin, INPUT) ; // input from the Sound Detection Module
-
+  // Magnetic-sensor related
+  pinMode(switchPin, INPUT);
 }
 //1,0,1,0 backwards >> 0,1,0,1 forwards
 //shemal odam,shemal wara,yemen odam ,yemen wara speed
@@ -98,7 +99,13 @@ void slowrightwards(){
 
 
 void loop() {
-  
+  // Mangetic-sensor related
+  if(digitalRead(switchPin) == LOW){
+   	digitalWrite(ledPin, LOW);
+   }
+  else{
+	digitalWrite(ledPin, HIGH);
+  }
   delay(1000);                     // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
   Serial.print("Ping: ");
   Serial.print(sonar.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
