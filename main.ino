@@ -9,6 +9,7 @@ int pso1 = 22  ; int pso2 = 24  ; int psos = 2 ; //pso=pin shemal odam  .. psos 
 int psw1 = 26  ; int psw2 = 28  ; int psws = 3 ; //pin shemal wara
 int pyo1 = 30  ; int pyo2 = 32  ; int pyos = 4 ; //pin yemen odam
 int pyw1 = 34  ; int pyw2 = 36  ; int pyws = 5 ; // pin yemen wara
+int irs;
 
 // lowest and highest sensor readings:
 const int sensorMin = 0;     // sensor minimum
@@ -121,5 +122,6 @@ void loop() {
       else STOP() ;
     }
   }
-
+ irs = digitalRead(52)  ;
+  if(irs==HIGH) {rightwards(); delay(200);} 
 }
