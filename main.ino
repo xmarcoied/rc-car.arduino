@@ -18,6 +18,7 @@ int soundDetectedPin = 10; // Use Pin 10 as our Input
 int soundDetectedVal = HIGH; // This is where we record our Sound Measurement
 boolean bAlarm = false;
 unsigned long lastSoundDetectTime; // Record the time that we measured a sound
+int soundAlarmTime = 500; // Number of milli seconds to keep the sound alarm high
 
 
 // Flame-sensor related
@@ -100,11 +101,13 @@ void slowrightwards(){
 
 void loop() {
   // Mangetic-sensor related
+  // FIXME : Handling many sensors
   if(digitalRead(switchPin) == LOW){
-   	digitalWrite(ledPin, LOW);
+        // TODO : Add more functionality for the Magnetic sensor
+    	STOP();
    }
   else{
-	digitalWrite(ledPin, HIGH);
+	STOP();
   }
   delay(1000);                     // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
   Serial.print("Ping: ");
