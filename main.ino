@@ -26,7 +26,7 @@ const int sensorMin = 0;     // sensor minimum
 const int sensorMax = 1024;  // sensor maximum
 
 // Mangetic-sensor related 
-const int switchPin = 2;
+const int switchPin = 6;
 
 void setup() {
   Serial.begin(115200);
