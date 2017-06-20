@@ -47,6 +47,10 @@
   #define ECHO_PIN     11  
   #define MAX_DISTANCE 450 
   NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);  
+
+  // Mangetic-sensor related 
+  const int switchPin = 53;
+  
   void setup() {
     pinMode(Motor1Pin1, OUTPUT);
     pinMode(Motor1Pin2, OUTPUT);
@@ -63,6 +67,11 @@
 
     //IR related
     pinMode(ircPin , INPUT);
+    
+    // Magnetic-sensor related
+    pinMode(switchPin, INPUT);
+    digitalWrite(switchPin, HIGH);
+    
   } 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
   void loop() {
@@ -112,7 +121,7 @@
 
     if(state == '7'){
       config7 = toggle(config7);
-      showoff("" , config7);
+      showoff("Magnetic" , config7);
     }
 
     if(state == '8'){
@@ -134,6 +143,9 @@
     }
     if(config5 == 1){
       conf5();
+    }
+    if(config7 == 1){
+      conf7();
     }
   }
   
@@ -219,6 +231,18 @@
         Stop();
         delay(5000);
     }
+  }
+
+  void conf7(){
+    if(digitalRead(switchPin) == LOW){
+      // TODO : Add more functionality for the Magnetic sensor
+      Serial.println("ON");
+      Stop();
+    }
+    else{
+    Stop();
+    Serial.println("OFF");
+    } 
   }
   void GoForward() {
     digitalWrite(Motor1Pin1, LOW);
