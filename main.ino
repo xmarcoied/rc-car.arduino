@@ -115,6 +115,9 @@
     if(config2 == 1){
       conf2();
     }
+    if(config3 == 1){
+      conf3();
+    }
   }
   
   int toggle(int var){
@@ -168,14 +171,17 @@
         if (!bAlarm){
           Serial.println("LOUD, LOUD");
           bAlarm = true;
+          GoForward();
         }
     }
     else{
       if( (millis()-lastSoundDetectTime) > soundAlarmTime  &&  bAlarm){
         Serial.println("quiet");
         bAlarm = false;
+        Stop();
       }
     }
+    
   }
   void GoForward() {
     digitalWrite(Motor1Pin1, LOW);
