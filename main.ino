@@ -9,7 +9,9 @@
   const int Motor4Pin1 = 8;  const int Motor4Pin2 = 9; 
   char state = 's';
   int lock = 1 ;
-  int config1 = 0 ; int config2 = 0 ;
+  int buzzer = 13;
+  int buzz = 0 ; 
+  int config1 = 0    ; int config2 = 0 ;
   int config3 = 0 ; int config4 = 0 ;
   int config5 = 0 ; int config6 = 0 ;
   int config7 = 0 ; int config8 = 0 ;
@@ -75,7 +77,7 @@
     // Magnetic-sensor related
     pinMode(switchPin, INPUT);
     digitalWrite(switchPin, HIGH);
-    
+    pinMode(buzzer , OUTPUT);
   } 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
   void loop() {
@@ -135,6 +137,10 @@
       config8 = toggle(config8);
       showoff("" , config8);
     }
+    if(state == '9'){
+      config9 = toggle(config9);
+      showoff("Buzzer" , config9);
+    }
     // Conf1 == Keypad and password
     if(config1 == 1){
       conf1();
@@ -154,6 +160,9 @@
     if(config7 == 1){
       conf7();
     }
+    if(config9 == 1){
+      conf9();
+    }
   }
   
   int toggle(int var){
@@ -170,7 +179,10 @@
       Serial.println(" is on");
     }
   }
-
+void conf9(){
+  buzz = toggle(buzz);
+  digitalWrite(buzzer , buzz);
+}
 void config0(){
   lock = 1;
   Serial.println("Lock is off");
@@ -213,9 +225,11 @@ void checkPassword(){
         break;
       case 1:    // A fire between 1-3 feet away.
         Serial.println("** Distant Fire **");
+        config9 = 1;
         break;
       case 2:    // No fire detected.
         Serial.println("No Fire");
+        config9 = 1;
         break;
     }
   }
@@ -272,6 +286,7 @@ void checkPassword(){
     else{
     Stop();
     Serial.println("OFF");
+    config9 = 1;
     } 
   }
   void GoForward() {
