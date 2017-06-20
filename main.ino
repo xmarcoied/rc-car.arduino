@@ -1,5 +1,6 @@
   #include <Keypad.h>
   #include <NewPing.h>
+  #include <Password.h>
   
   // Motor-base related
   const int Motor1Pin1 = 2;  const int Motor1Pin2 = 3;
@@ -7,7 +8,7 @@
   const int Motor3Pin1 = 6;  const int Motor3Pin2 = 7;
   const int Motor4Pin1 = 8;  const int Motor4Pin2 = 9; 
   char state = 's';
-  char * msg = "Marco";
+  int lock = 1 ;
   int config1 = 0 ; int config2 = 0 ;
   int config3 = 0 ; int config4 = 0 ;
   int config5 = 0 ; int config6 = 0 ;
@@ -26,6 +27,7 @@
   byte rowPins[ROWS] = {A5, A4, A3, A2}; //connect to the row pinouts of the keypad
   byte colPins[COLS] = {A9, A8, A7, A6}; //connect to the column pinouts of the keypad
   Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+  Password password = Password( "1234" );
 
   // Flame-sensor related
   // lowest and highest sensor readings:
@@ -61,7 +63,9 @@
     pinMode(Motor4Pin1, OUTPUT);
     pinMode(Motor4Pin2, OUTPUT);
     Serial.begin(9600);
-
+    // Password 
+    keypad.addEventListener(keypadEvent); 
+    
     // Sound related
     pinMode (soundDetectedPin, INPUT) ; // input from the Sound Detection Module
 
@@ -79,19 +83,22 @@
     if(Serial.available()>0){
       state = Serial.read();
     } 
-    if(state == 'f'){
+    if(state == '0'){
+      config0();
+    }
+    if(state == 'f' && lock == 1){
       GoForward();
     } 
-    if(state == 'b'){
+    if(state == 'b' && lock == 1){
      GoBackward(); 
     } 
-    if(state == 'r'){
+    if(state == 'r' && lock == 1){
       GoRight();
     } 
-    if(state == 'l'){
+    if(state == 'l' && lock == 1){
       GoLeft();
     } 
-    if(state == 's'){
+    if(state == 's' ){
       Stop();
     } 
     if(state == '1'){
@@ -164,13 +171,35 @@
     }
   }
 
-  // config1 == Keypad and password
-  void conf1(){
-    char key = keypad.getKey();
-    if(key)
-      Serial.println(key);
+void config0(){
+  lock = 1;
+  Serial.println("Lock is off");
+}
+// config1 == Keypad and password
+void conf1(){
+    keypad.getKey();
   }
+void keypadEvent(KeypadEvent eKey){
+  switch (keypad.getState()){
+    case PRESSED:
+  Serial.print("Pressed: ");
+  Serial.println(eKey);
+  switch (eKey){
+    case '*': checkPassword(); break;
+    default: password.append(eKey);
+     }
+  }
+}
 
+void checkPassword(){
+  if (password.evaluate()){
+    Serial.println("Success");
+    lock = 0 ;
+  }else{
+    Serial.println("Wrong");
+    password.reset();
+  }
+}
   void conf2(){
     // read the sensor on analog A0:
     int sensorReading = analogRead(A0);
@@ -219,6 +248,7 @@
       Stop();
       Serial.println("Stoooop!!");
       delay(2000);
+      lock = 0 ;
     } 
   }
 
