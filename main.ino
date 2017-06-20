@@ -39,6 +39,14 @@
   unsigned long lastSoundDetectTime; // Record the time that we measured a sound
   int soundAlarmTime = 500; // Number of milli seconds to keep the sound alarm high
 
+  // IR related
+  int ircPin = 52;
+
+  // Ultrasonic related 
+  #define TRIGGER_PIN  12  
+  #define ECHO_PIN     11  
+  #define MAX_DISTANCE 450 
+  NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);  
   void setup() {
     pinMode(Motor1Pin1, OUTPUT);
     pinMode(Motor1Pin2, OUTPUT);
@@ -52,6 +60,9 @@
 
     // Sound related
     pinMode (soundDetectedPin, INPUT) ; // input from the Sound Detection Module
+
+    //IR related
+    pinMode(ircPin , INPUT);
   } 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
   void loop() {
@@ -88,15 +99,15 @@
     }
     if(state == '4'){
       config4 = toggle(config4);
-      showoff("" , config4);
+      showoff("IR" , config4);
     }
     if(state == '5'){
       config5 = toggle(config5);
-      showoff("" , config5);
+      showoff("Ultrasonic 1" , config5);
     }
     if(state == '6'){
       config6 = toggle(config6);
-      showoff("" , config6);
+      showoff("Ultrasonic 2" , config6);
     }
 
     if(state == '7'){
@@ -117,6 +128,12 @@
     }
     if(config3 == 1){
       conf3();
+    }
+    if(config4 == 1){
+      conf4();
+    }
+    if(config5 == 1){
+      conf5();
     }
   }
   
@@ -182,6 +199,26 @@
       }
     }
     
+  }
+
+  void conf4(){
+   int irs = digitalRead(ircPin)  ;
+   if(irs==LOW) {
+      Stop();
+      Serial.println("Stoooop!!");
+      delay(2000);
+    } 
+  }
+
+  void conf5(){
+    Serial.print("Ping: ");
+    Serial.print(sonar.ping_cm()); // Send ping, get distance in cm and print result (0 = outside set distance range)
+    Serial.println("cm");
+    int foo = sonar.ping_cm();
+    if(foo < 10 && foo != 0){
+        Stop();
+        delay(5000);
+    }
   }
   void GoForward() {
     digitalWrite(Motor1Pin1, LOW);
