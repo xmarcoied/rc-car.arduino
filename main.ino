@@ -193,10 +193,10 @@ void keypadEvent(KeypadEvent eKey){
 
 void checkPassword(){
   if (password.evaluate()){
-    Serial.println("Success");
+    Serial.println("The password is right, the car is now locked");
     lock = 0 ;
   }else{
-    Serial.println("Wrong");
+    Serial.println("The password is wrong");
     password.reset();
   }
 }
